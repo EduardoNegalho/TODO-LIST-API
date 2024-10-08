@@ -2,17 +2,13 @@ import prisma from "../config/database.js";
 import { validationResult } from 'express-validator';
 
 export const createTask = async (req, res) => {
-    // valida dados
+    // valida dados de entrada
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() })
     }
 
     const { title, description, status } = req.body;
-    // valida se há campos vazios
-    if (!title || !description || !status) {
-        return res.status(400).json({ erro: "Todos os campos devem ser preeenchidos." });
-    }
 
     try {
         // cria tarefa
