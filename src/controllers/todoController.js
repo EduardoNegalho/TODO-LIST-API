@@ -39,8 +39,8 @@ export const updateTask = async (req, res) => {
 
     try {
         // verifica se tarefa existe
-        const task = await prisma.task.findUnique({ 
-            where: { id: id } 
+        const task = await prisma.task.findUnique({
+            where: { id: id }
         });
         if (!task) { return res.status(404).json({ erro: "Tarefa não encontrada." }) }
 
@@ -60,6 +60,25 @@ export const updateTask = async (req, res) => {
 
     } catch (error) {
         console.error(`Error ao tentar atualizar a tarefa: ${error.message}`);
+        return res.status(500).json({ erro: "Erro interno no servidor." });
+    }
+}
+
+export const getTasks = async (req, res) => {
+    const query = {};
+
+    if (req.query.title) { query.title = req.query.title; }
+    if (req.query.description) { query.description = req.query.description; }
+    if (req.query.status) { query.status = req.query.status; }
+
+    try {
+        const tasks = await prisma.task.findMany({
+            where: query
+        });
+
+        return res.status(200).json(tasks);
+    } catch (error) {
+        console.error(`Erro ao tentar buscar as tarefas: ${error.message}`);
         return res.status(500).json({ erro: "Erro interno no servidor." });
     }
 }
